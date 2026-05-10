@@ -47,6 +47,7 @@ app.use(morgan('dev'));
 
 // ── Routes ───────────────────────────────────────────────────────
 const authRoutes     = require('./routes/auth');
+console.log("AUTH ROUTES LOADED");
 const mcqRoutes      = require('./routes/mcq');
 const pdfRoutes      = require('./routes/pdfs');
 const adminRoutes    = require('./routes/admin');
@@ -68,6 +69,10 @@ app.use('/api/admin',     adminRoutes);
 // ── Health Check ─────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, message: 'Bankers Colony API is running ✅', timestamp: new Date() });
+});
+
+app.get('/', (req, res) => {
+  res.send('🏦 Bankers Colony API is running');
 });
 
 // ── 404 for unknown API routes ───────────────────────────────────
