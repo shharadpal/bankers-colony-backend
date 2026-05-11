@@ -119,7 +119,32 @@ cron.schedule('30 0 * * *', async () => {
 
 // ── Start Server ─────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const User = require('./models/User');
+
+async function createAdmin() {
+  try {
+    const existingAdmin = await User.findOne({
+      email: process.env.ADMIN_EMAIL
+    });
+
+    if (!existingAdmin) {
+      await User.create({
+        name: process.env.ADMIN_NAME || 'Admin',
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD,
+        role: 'admin',
+        isVerified: true
+      });
+ 
+      console.log('✅ Admin account created successfully');
+    } else {
+      console.log('ℹ️ Admin already exists');
+    }
+  } catch (err) {
+    console.error('❌ Admin creation failed:', err.message);
+  }
+}
+app.listen(PORT, async () => {
   console.log(`
 ╔══════════════════════════════════════════════╗
 ║   🏦  BANKERS COLONY API — RUNNING           ║
@@ -128,4 +153,5 @@ app.listen(PORT, () => {
 ║   Health: http://localhost:${PORT}/api/health   ║
 ╚══════════════════════════════════════════════╝
   `);
+  await createAdmin();
 });
